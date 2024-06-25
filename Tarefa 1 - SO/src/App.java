@@ -11,13 +11,10 @@ import entities.Processador;
 import entities.Tarefa;
 
 public class App {
+    static int numProcessador;
     public static void main(String[] args) throws Exception {
         
         LinkedList<Tarefa> tarefaOrg = new LinkedList<Tarefa>();
-        
-        List<Processador> processador = new ArrayList<Processador>();
-
-        Scanner sc = new Scanner(System.in);
         
             try (BufferedReader leitor = new BufferedReader(new FileReader("tarefas.txt"))){
                 String linha;
@@ -40,53 +37,37 @@ public class App {
             LinkedList<Tarefa> tarefaCont = new LinkedList<>(tarefaOrg);
             Collections.reverse(tarefaCont);
 
+            Scanner sc = new Scanner(System.in);
+    
             System.out.print("Quantos Processadores? ");
-            int numProcessador = sc.nextInt();
+            numProcessador = sc.nextInt();
 
-            for(int i = 0; i < numProcessador; i++){
-                processador.add(new Processador(i));
-            }
-
-            for(Tarefa elemento : tarefaOrg){
-                System.out.println(elemento);
-            }
-
-            for(Tarefa elemento : tarefaCont){
-                System.out.println(elemento);
-            }
-
-            int numCiclos = 0;
-            while(tarefaOrg.size() > 0){
-                for(Processador proc : processador){
-                    if(numCiclos == proc.getFimTarefa() && tarefaOrg.size() != 0){
-                        System.out.println("processador" + proc.getId() + " - " + proc.adicionaTarefa(tarefaOrg.get(0)));
-                        tarefaOrg.remove(0);
-                    }
-                }
-                numCiclos++;
-                System.out.println("Numero de ciclos: " + numCiclos);
-            }
-
-            for(int i = 0; i < numProcessador; i++){
-                processador.add(new Processador(i));
-            }
+            executar(tarefaOrg);
+            executar(tarefaCont);
             
-            numCiclos = 0;
-            while(tarefaCont.size() > 0){
-                for(Processador proc : processador){
-                    if(numCiclos == proc.getFimTarefa() && tarefaCont.size() != 0){
-                        System.out.println("processador" + proc.getId() + " - " + proc.adicionaTarefa(tarefaCont.get(0)));
-                        tarefaCont.remove(0);
-                    }
-                }
-                numCiclos++;
-                System.out.println("Numero de ciclos: " + numCiclos);
-            }
-            
+            sc.close();
             }
             catch (IOException e){
                 System.out.println("ERRO: " + e.getMessage());
             }
-        sc.close();
+    }
+
+    private static void executar(LinkedList<Tarefa> tarefa) {   
+            List<Processador> processador = new ArrayList<Processador>();
+
+            for(int i = 0; i < numProcessador; i++){
+                processador.add(new Processador(i));
+            }
+            int numCiclos = 0;
+            while(tarefa.size() > 0){
+                for(Processador proc : processador){
+                    if(numCiclos == proc.getFimTarefa() && tarefa.size() != 0){
+                        System.out.println("processador" + proc.getId() + " - " + proc.adicionaTarefa(tarefa.get(0)));
+                        tarefa.remove(0);
+                    }
+                }
+                numCiclos++;
+                System.out.println("Numero de ciclos: " + numCiclos);
+            }
     }
 }

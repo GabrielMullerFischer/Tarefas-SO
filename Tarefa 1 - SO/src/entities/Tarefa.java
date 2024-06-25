@@ -18,9 +18,4 @@ public class Tarefa {
     public int getTempo() {
         return tempo;
     }
-
-    @Override
-    public String toString() {
-        return id + " " + tempo;
-    }
 }
