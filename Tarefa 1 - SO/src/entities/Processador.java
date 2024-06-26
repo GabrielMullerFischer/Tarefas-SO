@@ -17,12 +17,11 @@ public class Processador {
         this.tarefas = new ArrayList<>();
     }
 
-    public String adicionaTarefa(Tarefa tarefa){
+    public void adicionaTarefa(Tarefa tarefa){
         this.iniTarefa = fimTarefa;
         this.fimTarefa += tarefa.getTempo();
         String resultado = tarefa.getId() + ";" + iniTarefa + ";" + fimTarefa;
         tarefas.add(resultado);
-        return resultado;
     }
 
     public int getId() {
