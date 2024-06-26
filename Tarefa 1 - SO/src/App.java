@@ -1,5 +1,7 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,8 +44,11 @@ public class App {
             System.out.print("Quantos Processadores? ");
             numProcessador = sc.nextInt();
 
-            executar(tarefaOrg);
-            executar(tarefaCont);
+            System.out.println("Menor => Maior");
+            executar(tarefaOrg, "Saida_SFJ.txt");
+            System.out.println();
+            System.out.println("Maior => Menor");
+            executar(tarefaCont, "Saida_LJF.txt");
             
             sc.close();
             }
@@ -52,22 +57,30 @@ public class App {
             }
     }
 
-    private static void executar(LinkedList<Tarefa> tarefa) {   
-            List<Processador> processador = new ArrayList<Processador>();
+    private static void executar(LinkedList<Tarefa> tarefa, String arquivoSaida) throws IOException {   
+        List<Processador> processador = new ArrayList<Processador>();
 
-            for(int i = 0; i < numProcessador; i++){
-                processador.add(new Processador(i));
-            }
-            int numCiclos = 0;
-            while(tarefa.size() > 0){
-                for(Processador proc : processador){
-                    if(numCiclos == proc.getFimTarefa() && tarefa.size() != 0){
-                        System.out.println("processador" + proc.getId() + " - " + proc.adicionaTarefa(tarefa.get(0)));
-                        tarefa.remove(0);
-                    }
+        for(int i = 0; i < numProcessador; i++){
+            processador.add(new Processador(i + 1));
+        }
+        int numCiclos = 0;
+        while(tarefa.size() != 0){
+            for(Processador proc : processador){
+                if(numCiclos == proc.getFimTarefa() && tarefa.size() != 0){
+                    System.out.println("processador" + proc.getId() + " - " + proc.adicionaTarefa(tarefa.get(0)));
+                    tarefa.remove(0);
                 }
-                numCiclos++;
-                System.out.println("Numero de ciclos: " + numCiclos);
             }
+            numCiclos++;
+        }
+
+        try (BufferedWriter escrever = new BufferedWriter(new FileWriter(arquivoSaida))) {
+            for (Processador proc : processador) {
+                escrever.write("Processador_" + proc.getId() + "\n");
+                for (String t : proc.getTarefas()) {
+                    escrever.write(t + "\n");
+                }
+            }
+        }
     }
 }
